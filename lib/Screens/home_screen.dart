@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {"id": 3, "image_path": 'assets/images/2.jpg'},
     {"id": 4, "image_path": 'assets/images/3.jpg'},
     {"id": 5, "image_path": 'assets/images/4.jpg'},
-    {"id": 6, "image_path": 'assets/images/6.jpg'},
+    {"id": 6, "image_path": 'assets/images/5.jpg'},
     {"id": 7, "image_path": 'assets/images/6.jpg'},
     {"id": 8, "image_path": 'assets/images/7.jpg'}
   ];
@@ -38,27 +38,39 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 print(currentIndex);
               },
-              child: CarouselSlider(
-                items: imageList
-                    .map(
-                      (item) => Image.asset(
-                        item['image_path'],
-                        fit: BoxFit.cover,
-                        width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                child: Card(
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18.0),
+                    child: CarouselSlider(
+                      items: imageList
+                          .map(
+                            (item) => Image.asset(
+                              item['image_path'],
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
+                          )
+                          .toList(),
+                      carouselController: carouselController,
+                      options: CarouselOptions(
+                        scrollPhysics: const BouncingScrollPhysics(),
+                        autoPlay: true,
+                        aspectRatio: 0.8,
+                        viewportFraction: 1,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            currentIndex = index;
+                          });
+                        },
                       ),
-                    )
-                    .toList(),
-                carouselController: carouselController,
-                options: CarouselOptions(
-                  scrollPhysics: const BouncingScrollPhysics(),
-                  autoPlay: true,
-                  aspectRatio: 0.8,
-                  viewportFraction: 1,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      currentIndex = index;
-                    });
-                  },
+                    ),
+                  ),
                 ),
               ),
             ),
