@@ -107,29 +107,32 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
+            ElevatedButton.icon(
+              icon: const Icon(
+                Icons.search,
+                color: Colors.white,
+              ),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 1, 61, 58)),
+                backgroundColor: const Color.fromARGB(255, 1, 61, 58),
+                minimumSize: const Size(225, 40),
+              ),
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return const LoginView();
+                      return const TourGuides();
                     },
                   ),
                 );
               },
-              child: const Text(
-                "Registration of Tourist",
+              label: const Text(
+                "Search Tour Guides",
                 style: TextStyle(color: Colors.white),
               ),
             ),
             const SizedBox(
               width: 5,
-            ),
-            const Icon(
-              Icons.people_alt,
             ),
           ],
         ),
@@ -139,9 +142,15 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
+            ElevatedButton.icon(
+              icon: const Icon(
+                Icons.perm_identity,
+                color: Colors.white,
+              ),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 1, 61, 58)),
+                backgroundColor: const Color.fromARGB(255, 1, 61, 58),
+                minimumSize: const Size(200, 40),
+              ),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -152,16 +161,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 );
               },
-              child: const Text(
-                "Registration of Tour Guide",
+              label: const Text(
+                "Tour Guide Registration",
                 style: TextStyle(color: Colors.white),
               ),
             ),
             const SizedBox(
               width: 5,
-            ),
-            const Icon(
-              Icons.perm_identity,
             ),
           ],
         ),
