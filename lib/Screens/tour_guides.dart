@@ -18,28 +18,10 @@ class _TourGuidesState extends State<TourGuides> {
         title: const Text("Tour Guides"),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Column(
           children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 1, 61, 58)),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginView();
-                    },
-                  ),
-                );
-              },
-              child: const Text(
-                "Registration of Tour Guide",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
               child: Row(
                 children: [
