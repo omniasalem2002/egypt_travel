@@ -18,32 +18,39 @@ class _CustomGuideState extends State<CustomGuide> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Container(
-          width: 160,
-          height: 180,
-          decoration: BoxDecoration(
-              color: Color.fromARGB(255, 192, 214, 213),
-              borderRadius: BorderRadius.circular(10)),
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  alignment: Alignment.topLeft,
-                  "images/guide.jpg",
-                  fit: BoxFit.fitWidth,
-                ),
+        width: 160,
+        height: 180,
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 192, 214, 213),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                "images/guide.jpg",
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 122, // Set a fixed height for the image
               ),
-              const Text(
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+              child: const Text(
                 "Guide1",
                 style: TextStyle(fontSize: 16, color: Colors.black),
               ),
-              RatingBar.builder(
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: RatingBar.builder(
                 itemSize: 20,
                 initialRating: 4,
-                minRating: 2,
+                minRating: 1,
                 direction: Axis.horizontal,
                 allowHalfRating: true,
-                itemPadding: const EdgeInsets.symmetric(horizontal: 4),
+                itemPadding: const EdgeInsets.symmetric(horizontal: 2.0),
                 itemBuilder: (context, _) {
                   return const Icon(
                     Icons.star,
@@ -52,8 +59,10 @@ class _CustomGuideState extends State<CustomGuide> {
                 },
                 onRatingUpdate: (rating) {},
               ),
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

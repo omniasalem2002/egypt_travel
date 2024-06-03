@@ -18,102 +18,27 @@ class _TourGuidesState extends State<TourGuides> {
         title: const Text("Tour Guides"),
         centerTitle: true,
       ),
-      body: const SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomGuide(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomGuide(),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomGuide(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomGuide(),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomGuide(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomGuide(),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomGuide(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomGuide(),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomGuide(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomGuide(),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomGuide(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CustomGuide(),
-                  ),
-                ],
-              ),
-            ),
-          ],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+      // Determine the number of columns based on screen width
+      int crossAxisCount = (constraints.maxWidth ~/ 150).toInt();
+
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 10.0,
+          ),
+          itemCount: 12, // Change this to the number of items you have
+          itemBuilder: (context, index) {
+            return const CustomGuide();
+          },
         ),
-      ),
+      );
+    },
+    ),
     );
   }
 }

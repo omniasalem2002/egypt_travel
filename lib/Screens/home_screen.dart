@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:guru/Screens/country_city_selection.dart';
 import 'package:guru/Screens/login_view.dart';
 import 'package:guru/Screens/tour_guides.dart';
 import 'package:lottie/lottie.dart';
@@ -121,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return const TourGuides();
+                      return const CountryCitySelection();
                     },
                   ),
                 );

@@ -199,31 +199,10 @@ class _LoginViewState extends State<LoginView> {
                               },
                             ),
                             const SizedBox(height: 20),
-                            TextField(
-                              decoration: InputDecoration(
+                            TextFormField(
+                              decoration: const InputDecoration(
                                 labelText: 'Birthdate',
                                 fillColor: ColorsApp.primaryColor,
-                                border: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: ColorsApp.darkPrimary,
-                                    width: 1.3,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: ColorsApp.darkPrimary,
-                                    width: 1.3,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: ColorsApp.primaryColor,
-                                    width: 1.3,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
                               ),
                               controller: _birthdateController,
                               onTap: _presentDatePicker,
