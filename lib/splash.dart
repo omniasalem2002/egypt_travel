@@ -1,6 +1,8 @@
+import 'package:guru/Screens/home_screen.dart';
 import 'package:guru/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -17,13 +19,29 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
     Future.delayed(const Duration(seconds: 1), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => OnboardingScreen(),
-        ),
-      );
+      _navigate();
     });
   }
+  Future<void> _navigate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? seen = prefs.getBool('onboardingComplete');
+
+    if (seen == null || !seen) {
+      await prefs.setBool('onboardingComplete', true);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) =>OnboardingScreen(),
+        ),
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => HomeScreen(),
+        ),
+      );
+    }
+  }
+
 
   @override
   void dispose() {

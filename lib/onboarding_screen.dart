@@ -135,8 +135,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ? Padding(
                             padding: const EdgeInsets.all(30),
                             child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
+                              onPressed: () async {
+                                final prefs = await SharedPreferences.getInstance();
+                                await prefs.setBool('onboardingComplete', true);
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) {
@@ -145,10 +147,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   ),
                                 );
                               },
-                              child: const Text(
-                                "START",
-                                style: TextStyle(color: ColorsApp.whiteColor),
-                              ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: ColorsApp.blackColor,
                                 shape: RoundedRectangleBorder(
@@ -161,6 +159,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         horizontal: width * 0.2, vertical: 25),
                                 textStyle: TextStyle(
                                     fontSize: (width <= 550) ? 13 : 17),
+                              ),
+                              child: const Text(
+                                "START",
+                                style: TextStyle(color: ColorsApp.whiteColor),
                               ),
                             ),
                           )
