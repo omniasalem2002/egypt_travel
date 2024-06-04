@@ -1,5 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:guru/Screens/login_view.dart';
+import 'package:guru/data/repos/fire_store_services.dart';
+import 'package:guru/logic/tour_guide/add_tour_guide/add_tour_guide_cubit.dart';
 import 'package:guru/splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,9 +26,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Splash(),
+    final fireStoreService = FireStoreServices();
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>TourGuideCubit(fireStoreService),
+        )
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Splash(),
+      ),
     );
   }
 }

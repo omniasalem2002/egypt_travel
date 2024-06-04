@@ -1,10 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:guru/core/component/custom_text_form_field.dart';
+import 'package:guru/core/component/show_list_cities_dialog.dart';
+import 'package:guru/core/component/show_list_payment_dialog.dart';
 import 'package:guru/core/utils/colors_app.dart';
 import 'package:guru/core/utils/custom_text_button.dart';
 import 'package:guru/core/utils/styles.dart';
+import 'package:guru/logic/tour_guide/add_tour_guide/add_tour_guide_cubit.dart';
+import 'package:guru/logic/tour_guide/add_tour_guide/add_tour_guide_state.dart';
 import 'package:image_picker/image_picker.dart';
 
 class LoginView extends StatefulWidget {
@@ -16,21 +21,23 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   String? _selectedUserType;
-  final _birthdateController = TextEditingController();
   DateTime? _selectedDate;
   String? _selectedPaymentType;
-  File? _image;
-  final List<String> _paymentTypes = ['Credit Card', 'PayPal', 'Bank Transfer'];
+
+
+  String? _selectedCity;
+
 
   final ImagePicker _picker = ImagePicker();
   // Function to handle image selection
+  //File? _image;
   Future<void> _pickImage() async {
     final XFile? pickedFile =
         await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path);
+        context.read<TourGuideCubit>().image = File(pickedFile.path);
       });
     }
   }
@@ -47,13 +54,14 @@ class _LoginViewState extends State<LoginView> {
       }
       setState(() {
         _selectedDate = pickedDate;
-        _birthdateController.text = '${pickedDate.toLocal()}'.split(' ')[0];
+        context.read<TourGuideCubit>().birthDateController.text = '${pickedDate.toLocal()}'.split(' ')[0];
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
@@ -147,192 +155,292 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     if (_selectedUserType == 'Tour Guide' ||
                         _selectedUserType == null)
-                      Form(
-                        //formKey
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 20),
-                            Container(
-                              width: double
-                                  .infinity, // This makes the container take up the full width
-                              child: Align(
-                                alignment: Alignment
-                                    .centerLeft, // Align the text to the start of the container
-                                child: Text(
-                                  "Register As Tour Guide",
-                                  style: Styles.font18LightGreyBold(context),
-                                  textAlign: TextAlign
-                                      .left, // Align text inside the Text widget to the left
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            CustomTextFormField(
-                              hintText: "Enter Your Name",
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your name';
-                                }
-                                if (value.length < 3) {
-                                  return 'Name must be at least 3 characters long';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            CustomTextFormField(
-                              hintText: "Enter Your Phone Number",
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your phone number';
-                                }
-                                if (value.length != 10) {
-                                  // Adjust length as per your requirement
-                                  return 'Phone number must be exactly 10 digits';
-                                }
-                                if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                                  return 'Phone number must contain only digits';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: 'Birthdate',
-                                fillColor: ColorsApp.primaryColor,
-                              ),
-                              controller: _birthdateController,
-                              onTap: _presentDatePicker,
-                              readOnly: true,
-                            ),
-                            const SizedBox(height: 20),
-                            DropdownButtonFormField<String>(
-                              value: _selectedPaymentType,
-                              decoration: InputDecoration(
-                                fillColor: ColorsApp.darkPrimary,
-                                labelText: 'Select Payment Type',
-                                border: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: ColorsApp.darkPrimary,
-                                    width: 1.3,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                              ),
-                              items: _paymentTypes.map((String type) {
-                                return DropdownMenuItem(
-                                  value: type,
-                                  child: Text(type),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedPaymentType = value;
-                                });
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            _image != null
-                                ? Image.file(_image!)
-                                : Text('No image selected.',
-                                    style: TextStyle(color: Colors.red)),
-                            ElevatedButton.icon(
-                              icon: const Icon(
-                                Icons.upload_file,
-                                color: ColorsApp.semiPrimaryColor,
-                              ),
-                              label: const Text(
-                                'Upload Photo',
-                                style: TextStyle(
-                                    color: ColorsApp.semiPrimaryColor),
-                              ),
-                              onPressed: _pickImage,
-                            ),
-                            const SizedBox(height: 20),
-                            CustomTextFormField(
-                              hintText: "Enter Your Email",
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your email';
-                                }
-                                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                                    .hasMatch(value)) {
-                                  return 'Please enter a valid email address';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            CustomTextFormField(
-                              hintText: "Enter Your City",
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your city';
-                                }
-                                if (value.length < 3) {
-                                  return 'City must be at least 3 characters long';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            CustomTextFormField(
-                              hintText: "Enter Your Personal Website",
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your personal website';
-                                }
-                                // Simple URL validation
-                                final urlPattern =
-                                    r'^(http[s]?:\/\/)?([^\s(["<,>]*\.)*[^\s[",><]*\.[^\s[",><]*$';
-                                final urlRegExp = RegExp(urlPattern);
-                                if (!urlRegExp.hasMatch(value)) {
-                                  return 'Please enter a valid URL';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            CustomTextFormField(
-                              hintText: "Enter Your Professional Summary",
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your professional summary';
-                                }
-                                return null;
-                              },
-                              maxLines: 5,
-                            ),
-                            const SizedBox(height: 20),
-                            CustomTextFormField(
-                              hintText: "Enter Your Work Experience",
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your work experience';
-                                }
-                                return null;
-                              },
-                              maxLines: 5,
-                            ),
-                            const SizedBox(height: 20),
-                            Padding(
-                              padding: const EdgeInsets.all(3),
-                              child: AppTextButton(
-                                buttonText: 'Create',
-                                textStyle:
-                                    Styles.font14LightGreyRegular(context),
-                                backgroundColor: ColorsApp.darkPrimary,
-                                onPressed: () {
-                                  //validateThenDoAddDepartment(context);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+          BlocListener<TourGuideCubit, TourGuideState>(
+      listener: (context, state) {
+        if (state is TourGuideLoading) {
+          // Show a loading indicator
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return Dialog(
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(width: 20),
+                      Text("Submitting..."),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        } else if (state is TourGuideSuccess) {
+          // Dismiss the loading indicator
+          Navigator.of(context).pop();
+
+          // Show a success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Form submitted successfully!')),
+          );
+        } else if (state is TourGuideFailure) {
+          // Dismiss the loading indicator
+          Navigator.of(context).pop();
+
+          // Show an error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.error)),
+          );
+        }
+      },
+      child: Form(
+        key: context.read<TourGuideCubit>().formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            Container(
+              width: double.infinity,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Register As Tour Guide",
+                  style: Styles.font18LightGreyBold(context),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            CustomTextFormField(
+              controller: context.read<TourGuideCubit>().tourGuideNameController,
+              hintText: "Enter Your Name",
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your name';
+                }
+                if (value.length < 3) {
+                  return 'Name must be at least 3 characters long';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            CustomTextFormField(
+              controller: context.read<TourGuideCubit>().tourGuidePhoneNumberController,
+              hintText: "Enter Your Phone Number",
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your phone number';
+                }
+                if (value.length != 10) {
+                  return 'Phone number must be exactly 10 digits';
+                }
+                if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                  return 'Phone number must contain only digits';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              onTap: _presentDatePicker,
+              controller: context.read<TourGuideCubit>().birthDateController,
+              decoration: const InputDecoration(
+                labelText: 'Birthdate',
+                fillColor: ColorsApp.primaryColor,
+              ),
+              readOnly: true,
+            ),
+            const SizedBox(height: 20),
+        /*    DropdownButtonFormField<String>(
+              value: context.read<TourGuideCubit>().selectedPaymentController.text,
+              decoration: const InputDecoration(
+                filled: true,
+                fillColor: ColorsApp.moreLightGrey,
+                labelText: 'Select Payment Type',
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: ColorsApp.darkPrimary, width: 1.3),
+                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(0.0)),
+                ),
+              ),
+              items: _paymentTypes.map((String type) {
+                return DropdownMenuItem(
+                  value: type,
+                  child: Text(type),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedPaymentType = value;
+                });
+              },
+            ),*/
+            const SizedBox(height: 20),
+           /* DropdownButtonFormField<String>(
+              value: context.read<TourGuideCubit>().selectedCityController.text,
+              decoration: const InputDecoration(
+                filled: true,
+                fillColor: ColorsApp.moreLightGrey,
+                labelText: 'Select city Type',
+                hintStyle: TextStyle(color: ColorsApp.darkPrimary),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: ColorsApp.darkPrimary, width: 1.3),
+                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(0.0)),
+                ),
+              ),
+              items: _cities.map((String type) {
+                return DropdownMenuItem(
+                  value: type,
+                  child: Text(type),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  // Check if the value is non-null before assigning
+                  if (value != null) {
+                    context.read<TourGuideCubit>().selectedCityController.text = value;
+                  }
+                });
+              },
+            ),*/
+            CustomTextFormField(
+              controller: context.read<TourGuideCubit>().selectedCityController,
+              hintText: 'Select City',
+              isEnabled: false,
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: ColorsApp.primaryColor,
+                  width: 1.3,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              suffixIcon: const Icon(
+                Icons.arrow_drop_down,
+                size: 20,
+                color: ColorsApp.primaryColor,
+              ),
+              function: () {
+                showListCityDialog(context, size);
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please select City';
+                }
+              },
+            ),
+
+            const SizedBox(height: 20),
+
+
+            CustomTextFormField(
+              controller: context.read<TourGuideCubit>().selectedPaymentController,
+              hintText: 'Select payment',
+              isEnabled: false,
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: ColorsApp.primaryColor,
+                  width: 1.3,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              suffixIcon: const Icon(
+                Icons.arrow_drop_down,
+                size: 20,
+                color: ColorsApp.primaryColor,
+              ),
+              function: () {
+                showListPaymentDialog(context, size);
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please select a type of payment you want';
+                }
+              },
+            ),
+
+            const SizedBox(height: 20),
+            context.read<TourGuideCubit>().image != null ? Image.file( context.read<TourGuideCubit>().image!) : Text('No image selected.',style: TextStyle(color: Colors.red)),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.upload_file,color: ColorsApp.darkPrimary,),
+              label: const Text('Upload Photo',style: TextStyle(color: ColorsApp.darkPrimary),),
+              onPressed: _pickImage,
+            ),
+            const SizedBox(height: 20),
+            CustomTextFormField(
+              controller: context.read<TourGuideCubit>().emailController,
+              hintText: "Enter Your Email",
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email';
+                }
+                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                  return 'Please enter a valid email address';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            CustomTextFormField(
+              controller: context.read<TourGuideCubit>().personalWebsiteController,
+              hintText: "Enter Your Personal Website",
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your personal website';
+                }
+                final urlPattern = r'^(http[s]?:\/\/)?([^\s(["<,>]*\.)*[^\s[",><]*\.[^\s[",><]*$';
+                final urlRegExp = RegExp(urlPattern);
+                if (!urlRegExp.hasMatch(value)) {
+                  return 'Please enter a valid URL';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            CustomTextFormField(
+              controller: context.read<TourGuideCubit>().professionalSummaryController,
+              hintText: "Enter Your Professional Summary",
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your professional summary';
+                }
+                return null;
+              },
+              maxLines: 5,
+            ),
+            const SizedBox(height: 20),
+            CustomTextFormField(
+              controller: context.read<TourGuideCubit>().workExperiencesController,
+              hintText: "Enter Your Work Experience",
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your work experience';
+                }
+                return null;
+              },
+              maxLines: 5,
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.all(3),
+              child: AppTextButton(
+                buttonText: 'Create',
+                textStyle: Styles.font14LightGreyRegular(context),
+                backgroundColor: ColorsApp.darkPrimary,
+                onPressed: () {
+                  if (context.read<TourGuideCubit>().formKey.currentState?.validate() ?? false) {
+                    context.read<TourGuideCubit>().addTourGuide();
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      ),
                     if (_selectedUserType == " Tourist  ")
                       Form(
                         //formKey
